@@ -28,9 +28,9 @@ let mem = [];
 async function db() {
   try {
     const { getStore } = await import("@netlify/blobs");
-    const st = getStore("leads");
+    const st = getStore({ name: "leads", consistency: "strong" });
     return {
-      read: async () => (await st.get("all", { type: "json" })) || [],
+      read: async () => (await st.get("all", { type: "json", consistency: "strong" })) || [],
       write: async (v) => { await st.setJSON("all", v); },
     };
   } catch {
