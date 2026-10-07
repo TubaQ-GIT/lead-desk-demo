@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Demo Lender – Lead Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F6FB;--panel:#fff;--ink:#12263A;--mut:#5B6B7B;--line:#D5DDE5;--acc:#0A2A5E;--on:#fff;--err:#B42318;--warn:#8A5300;--code:#F2F5F8;--chip:#E3EBF8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1822;--panel:#16232F;--ink:#E6EDF3;--mut:#98A8B8;--line:#2A3A49;--acc:#8FB4FF;--on:#06142E;--err:#FF8A80;--warn:#F5B84B;--code:#0F1B25;--chip:#1B2E52}}
+:root[data-theme="dark"]{--bg:#0E1822;--panel:#16232F;--ink:#E6EDF3;--mut:#98A8B8;--line:#2A3A49;--acc:#8FB4FF;--on:#06142E;--err:#FF8A80;--warn:#F5B84B;--code:#0F1B25;--chip:#1B2E52}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:20px 24px 0;max-width:1180px;margin:0 auto}
+h1{font-size:22px;margin:0 0 2px;font-weight:600}
+.sub{color:var(--mut);margin:0 0 14px;max-width:70ch}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px 40px;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);padding:0 14px 32px}header{padding:16px 14px 0}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.tabs{display:flex;gap:4px;margin-bottom:12px}
+.tabs button{font:inherit;padding:8px 14px;border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:8px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--acc);color:var(--on);border-color:var(--acc);font-weight:500}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:4px}.full{grid-column:1/-1}
+label,.lbl{font-weight:500;font-size:14px}
+input[type=text],input[type=tel],input[type=email],input[type=number],select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);width:100%}
+input[type=file]{font:inherit;max-width:100%;color:var(--mut)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.bad{border-color:var(--err)!important}
+.err{color:var(--err);font-size:13px;min-height:0}
+.hint{color:var(--mut);font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.chip{background:var(--chip);color:var(--ink);border-radius:999px;padding:2px 10px;font-size:13px}
+.chip.no{background:transparent;border:1px solid var(--warn);color:var(--warn)}
+.prompt{border:1px solid var(--acc);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{font:inherit;padding:9px 16px;border-radius:8px;border:1px solid var(--acc);background:var(--acc);color:var(--on);cursor:pointer;font-weight:500}
+.btn.alt{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.6;cursor:wait}
+.docs{border-top:1px solid var(--line);margin-top:14px;padding-top:12px;display:grid;gap:10px}
+.doc{display:grid;grid-template-columns:1fr;gap:2px}
+.ok{color:var(--acc);font-size:13px}
+.banner{margin-top:14px;padding:10px 12px;border-radius:8px;border:1px solid var(--acc);background:var(--chip)}
+.banner.e{border-color:var(--err);background:transparent;color:var(--err)}
+.row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:640px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--mut);font-weight:500}
+.log{position:sticky;top:12px;max-height:84vh;overflow:auto}
+.log h2,.panel h2{font-size:16px;margin:0 0 8px}
+details{border:1px solid var(--line);border-radius:7px;margin-bottom:8px;background:var(--code)}
+summary{cursor:pointer;padding:7px 10px;font-size:13px;font-weight:500}
+pre{margin:0;padding:8px 10px;overflow-x:auto;font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;border-top:1px solid var(--line)}
+.s2{color:var(--acc)}.s4{color:var(--err)}
+[hidden]{display:none!important}
+.top{background:#0A2A5E;color:#fff}
+.nav{max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{font-weight:600;font-size:20px;display:flex;align-items:center;gap:8px}
+.mark{width:26px;height:26px;border-radius:6px;background:#F2A900;display:inline-block}
+.nav a{color:#DBE5F7;text-decoration:none;font-size:14px;cursor:pointer}
+.nav a:hover{color:#fff}.nav .sp{flex:1}
+.nav a.cta{background:#F2A900;color:#0A2A5E;padding:8px 16px;border-radius:8px;font-weight:600}
+.hero{max-width:1180px;margin:0 auto;padding:14px 24px 30px}
+.hero h1{font-size:28px;color:#fff;margin:0 0 6px;font-weight:600}
+.hero p{color:#C3D1EC;margin:0;max-width:62ch}
+footer{max-width:1180px;margin:0 auto;padding:0 24px 28px;color:var(--mut);font-size:13px}
+@media(max-width:900px){.nav,.hero,footer{padding-left:14px;padding-right:14px}}
+
+</style>
+</head>
+<body>
+<div class="top"><nav class="nav" aria-label="Main">
+<span class="brand"><span class="mark"></span>Demo Lender</span>
+<a data-p="gold" data-testid="nav-gold">Gold Loan</a><a data-p="home" data-testid="nav-home">Home Loan</a><a data-p="lap" data-testid="nav-property">Property Loan</a><a data-p="biz" data-testid="nav-business">Business Loan</a>
+<span class="sp"></span><a id="navLogin" data-testid="nav-login">Employee login</a><a class="cta" id="navApply" data-testid="nav-apply">Apply now</a></nav>
+<div class="hero"><h1>Loans against what you own</h1><p>Check your PIN code, pick a product, and send a loan lead in a few steps.</p></div></div>
+<div class="wrap">
+<main>
+<div class="tabs" role="tablist">
+<button role="tab" id="t-form" aria-selected="true" data-testid="tab-lead-form">Add lead</button>
+<button role="tab" id="t-portal" aria-selected="false" data-testid="tab-web-portal">Web portal</button>
+</div>
+
+<section class="panel" id="p-form" data-testid="lead-form">
+<h2>Add lead</h2>
+<div class="grid">
+<div class="f"><label for="name">Customer name</label><input type="text" id="name" data-testid="name" autocomplete="off"><div class="err" id="e-name" data-testid="error-name" role="alert"></div></div>
+<div class="f"><label for="mobile">Mobile number</label><input type="tel" id="mobile" data-testid="mobile" inputmode="numeric" maxlength="10"><div class="err" id="e-mobile" data-testid="error-mobile" role="alert"></div></div>
+<div class="f"><label for="email">Email ID</label><input type="email" id="email" data-testid="email"><div class="err" id="e-email" data-testid="error-email" role="alert"></div></div>
+<div class="f"><label for="pin">PIN code</label><input type="text" id="pin" data-testid="pincode" inputmode="numeric" maxlength="6"><div class="err" id="e-pin" data-testid="error-pincode" role="alert"></div>
+<div class="chips" id="pinInfo" data-testid="pin-info" aria-live="polite"></div></div>
+<div class="f"><label for="product">Product</label><select id="product" data-testid="product"><option value="">Select a product</option></select><div class="err" id="e-product" data-testid="error-product" role="alert"></div></div>
+<div class="f"><label for="sub">Sub-product</label><select id="sub" data-testid="sub-product"><option value="">Select a product first</option></select><div class="err" id="e-sub" data-testid="error-sub-product" role="alert"></div></div>
+<div class="f full" id="doorPrompt" hidden data-testid="doorstep-prompt"><div class="prompt"><span>This PIN code is eligible for doorstep gold loan. Apply for doorstep service?</span>
+<button type="button" class="btn alt" id="doorYes" data-testid="doorstep-yes">Yes</button><button type="button" class="btn alt" id="doorNo" data-testid="doorstep-no">No</button></div></div>
+<div class="f" id="gramsBox" hidden><label for="grams">Gold weight (grams)</label><input type="number" id="grams" data-testid="gold-grams" min="0" step="0.1"><div class="err" id="e-grams" data-testid="error-gold-grams" role="alert"></div></div>
+<div class="f"><label for="amount">Loan amount (₹)</label><input type="number" id="amount" data-testid="loan-amount" min="0"><div class="err" id="e-amount" data-testid="error-loan-amount" role="alert"></div><div class="hint" id="amtHint"></div></div>
+</div>
+<div class="docs" id="docs" data-testid="documents" hidden><div class="lbl">Documents <span class="hint">· PDF, JPG or PNG, up to 2 MB each</span></div><div id="docList" style="display:grid;gap:10px"></div></div>
+<div class="f full" style="margin-top:14px"><label style="font-weight:400"><input type="checkbox" id="tnc" data-testid="consent"> I agree to the terms and conditions</label><div class="err" id="e-tnc" data-testid="error-consent" role="alert"></div></div>
+<div class="row"><button class="btn" id="submit" data-testid="create-lead">Create lead</button><button class="btn alt" id="reset" data-testid="clear-form" type="button">Clear form</button></div>
+<div id="banner" data-testid="result" role="status" aria-live="polite"></div>
+<details style="margin-top:16px"><summary>Test data for PIN codes</summary><pre>400001, 411001  Maharashtra  Marathi   doorstep
+600001          Tamil Nadu   Tamil     doorstep
+560001          Karnataka    Kannada   doorstep
+500001          Telangana    Telugu    doorstep
+520001          Andhra Pradesh Telugu  branch only
+302001, 110001  Rajasthan/Delhi Hindi  doorstep
+380001          Gujarat      Gujarati  branch only
+682001, 700001  not serviceable (404)
+Any other 6 digits: not found (404)</pre></details>
+</section>
+
+<section class="panel" id="p-portal" data-testid="web-portal" hidden>
+<h2>Leads in the web portal</h2>
+<div class="tw"><table><thead><tr><th>Lead ID</th><th>Name</th><th>Product</th><th>Sub-product</th><th>PIN</th><th>State</th><th>Language</th><th>AI call</th><th>Docs</th></tr></thead><tbody id="rows" data-testid="portal-rows"></tbody></table></div>
+<p class="hint" id="empty" data-testid="portal-empty">No leads yet. Create one on the Add lead tab.</p>
+<div class="row"><button class="btn" id="refresh" data-testid="refresh-leads">Refresh</button><button class="btn alt" id="wipe" data-testid="reset-data">Reset demo data</button></div>
+</section>
+</main>
+
+<aside class="panel log" aria-label="API log">
+<h2>API log</h2>
+<p class="hint">Real requests to /api/*, newest first.</p>
+<div id="log" data-testid="api-log"></div>
+</aside>
+</div>
+<footer>Practice site for test automation. Not a real lender and not affiliated with any company.</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const D={id:["id","ID proof",1],addr:["addr","Address proof",1],inc:["inc","Income proof",1],prop:["prop","Property documents",1],pan:["pan","PAN card",1],bank:["bank","Bank statement (last 6 months)",1]};
+const opt=(d)=>[d[0],d[1],0];
+const P={
+gold:{n:"Gold loan",s:{branch:["Branch gold loan",3000,10000000],door:["Doorstep gold loan",50000,10000000]},d:[D.id,D.addr]},
+home:{n:"Home loan",s:{buy:["Purchase",300000,50000000],build:["Construction",300000,50000000],bt:["Balance transfer",300000,50000000]},d:[D.id,D.addr,D.inc,opt(D.prop)]},
+lap:{n:"Property loan (LAP)",s:{aff:["Affordable LAP (below ₹25 lakh)",200000,2499999],reg:["LAP (₹25 lakh to ₹3 crore)",2500000,30000000]},d:[D.id,D.addr,D.prop,opt(D.inc)]},
+biz:{n:"Business loan",s:{uns:["Unsecured business loan",100000,5000000]},d:[D.pan,D.bank]}};
+let leads=[],log=[],docs={},seq=1000,pinData=null;
+const inr=n=>Number(n).toLocaleString("en-IN");
+
+/* ---------- real API ---------- */
+const BASE=(new URLSearchParams(location.search).get("api")||"").replace(/\/$/,"");
+async function api(m,p,b){
+ let s=0,j;
+ try{const r=await fetch(BASE+p,{method:m,headers:{"Content-Type":"application/json"},body:m==="GET"?undefined:JSON.stringify(b||{})});s=r.status;j=await r.json();}
+ catch(e){j={error:"API_UNREACHABLE",message:"The API could not be reached. Check that the function is deployed."};}
+ log.unshift({m,p,s,b:b||{},j,t:new Date().toLocaleTimeString()});renderLog();return{s,j};}
+function renderLog(){
+ $("log").innerHTML=log.slice(0,30).map(e=>`<details><summary>${e.t} ${e.m} ${e.p} <span class="${e.s&&e.s<300?"s2":"s4"}">${e.s||"no response"}</span></summary><pre>${esc(JSON.stringify(e.b,null,1))}</pre><pre>${esc(JSON.stringify(e.j,null,1))}</pre></details>`).join("")||'<p class="hint">No calls yet.</p>';}
+async function loadLeads(){const r=await api("GET","/api/leads");if(r.s===200)leads=r.j.leads;renderPortal();}
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+/* ---------- portal ---------- */
+function renderPortal(){
+ $("rows").innerHTML=leads.map(l=>`<tr><td>${l.id}</td><td>${esc(l.name)}</td><td>${P[l.product].n}</td><td>${P[l.product].s[l.sub][0]}</td><td>${l.pincode}</td><td>${l.state}</td><td>${l.language}</td><td>${l.call}</td><td>${l.docCount}</td></tr>`).join("");
+ $("empty").hidden=leads.length>0;}
+
+/* ---------- form behaviour ---------- */
+Object.keys(P).forEach(k=>$("product").add(new Option(P[k].n,k)));
+const err=(k,msg)=>{$("e-"+k).textContent=msg||"";const el=({pin:"pin",tnc:"tnc"})[k]||k;const i=$(el);if(i)i.classList.toggle("bad",!!msg);};
+function setSubs(){
+ const p=$("product").value,s=$("sub");s.innerHTML="";
+ if(!p){s.add(new Option("Select a product first",""));}else{s.add(new Option("Select a sub-product",""));Object.entries(P[p].s).forEach(([k,v])=>s.add(new Option(v[0],k)));}
+ $("gramsBox").hidden=p!=="gold";docs={};renderDocs();hint();doorPrompt();}
+function hint(){const p=$("product").value,s=$("sub").value;$("amtHint").textContent=p&&s?`Allowed: ₹${inr(P[p].s[s][1])} to ₹${inr(P[p].s[s][2])}`:"";}
+function doorPrompt(){$("doorPrompt").hidden=!($("product").value==="gold"&&pinData&&pinData.doorstepEligible);}
+function renderDocs(){
+ const p=$("product").value;$("docs").hidden=!p;
+ $("docList").innerHTML=p?P[p].d.map(d=>`<div class="doc"><label for="doc-${d[0]}">${d[1]}${d[2]?"":' <span class="hint">(optional)</span>'}</label><input type="file" id="doc-${d[0]}" data-testid="upload-${d[0]}" data-key="${d[0]}"><div class="err" id="e-doc-${d[0]}" data-testid="error-upload-${d[0]}" role="alert"></div><div class="ok" id="ok-doc-${d[0]}" data-testid="upload-status-${d[0]}"></div></div>`).join(""):"";
+ document.querySelectorAll("#docList input[type=file]").forEach(i=>i.onchange=()=>checkDoc(i));}
+function checkDoc(i){
+ const k=i.dataset.key,f=i.files[0],e=$("e-doc-"+k),o=$("ok-doc-"+k);e.textContent="";o.textContent="";delete docs[k];
+ if(!f)return;
+ const ext=f.name.split(".").pop().toLowerCase();
+ if(!["pdf","jpg","jpeg","png"].includes(ext))e.textContent="Unsupported file type. Upload a PDF, JPG or PNG.";
+ else if(f.size===0)e.textContent="The file is empty.";
+ else if(f.size>2*1024*1024)e.textContent="The file is larger than 2 MB.";
+ else{docs[k]={fileName:f.name,size:f.size};o.textContent="Accepted: "+f.name;}}
+let pinTimer;
+$("pin").oninput=async()=>{
+ const v=$("pin").value.replace(/\D/g,"");$("pin").value=v;pinData=null;$("pinInfo").innerHTML="";err("pin");doorPrompt();
+ if(v.length!==6)return;
+ const r=await api("POST","/api/pincode/lookup",{pincode:v});
+ if($("pin").value!==v)return;
+ if(r.s!==200){err("pin",r.j.message);return;}
+ pinData=r.j;
+ $("pinInfo").innerHTML=`<span class="chip" data-testid="chip-state">${r.j.state}</span><span class="chip" data-testid="chip-language">${r.j.language}</span><span class="chip ${r.j.doorstepEligible?"":"no"}" data-testid="chip-doorstep">${r.j.doorstepEligible?"Doorstep available":"Branch only"}</span>`;
+ doorPrompt();};
+$("product").onchange=()=>{setSubs();err("product");};
+$("sub").onchange=()=>{hint();err("sub");};
+$("doorYes").onclick=()=>{$("sub").value="door";hint();};
+$("doorNo").onclick=()=>{$("sub").value="branch";hint();};
+
+function validate(){
+ let bad=0;const f=(k,m)=>{err(k,m);if(m)bad++;};
+ const name=$("name").value.trim(),mob=$("mobile").value.trim(),em=$("email").value.trim(),pin=$("pin").value,p=$("product").value,s=$("sub").value,amt=Number($("amount").value);
+ f("name",!name?"Enter the customer name.":!/^[A-Za-z][A-Za-z .'-]{1,59}$/.test(name)?"Use letters only for the name.":"");
+ f("mobile",!mob?"Enter the mobile number.":!/^[6-9]\d{9}$/.test(mob)?"Enter a valid 10-digit mobile number starting with 6, 7, 8 or 9.":"");
+ f("email",!em?"Enter the email ID.":!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)?"Enter a valid email ID.":"");
+ f("pin",!pin?"Enter the PIN code.":!/^\d{6}$/.test(pin)?"PIN code must be 6 digits.":!pinData?"Enter a serviceable PIN code.":"");
+ f("product",p?"":"Select a product.");
+ f("sub",!p?"":!s?"Select a sub-product.":s==="door"&&pinData&&!pinData.doorstepEligible?"Doorstep service is not available for this PIN code.":"");
+ f("grams",p==="gold"&&!(Number($("grams").value)>0)?"Enter the gold weight in grams.":"");
+ if(p&&s){const[,lo,hi]=P[p].s[s];f("amount",!amt?"Enter the loan amount.":amt<lo||amt>hi?`Amount must be between ₹${inr(lo)} and ₹${inr(hi)}.`:"");}else f("amount",!amt?"Enter the loan amount.":"");
+ if(p)P[p].d.forEach(d=>{const e=$("e-doc-"+d[0]);if(e.textContent){bad++;}else if(d[2]&&!docs[d[0]]){e.textContent="Upload the "+d[1].toLowerCase()+".";bad++;}});
+ f("tnc",$("tnc").checked?"":"Accept the terms and conditions to continue.");
+ return !bad;}
+
+$("submit").onclick=async()=>{
+ const b=$("banner");b.className="";b.textContent="";
+ if(!validate()){b.className="banner e";b.textContent="Fix the highlighted fields and try again.";return;}
+ const btn=$("submit");btn.disabled=true;
+ const payload={name:$("name").value.trim(),mobile:$("mobile").value.trim(),email:$("email").value.trim(),pincode:$("pin").value,product:$("product").value,sub:$("sub").value,amount:Number($("amount").value),goldGrams:$("grams").value?Number($("grams").value):undefined};
+ const r=await api("POST","/api/leads",payload);
+ if(r.s===201){
+  for(const[k,v]of Object.entries(docs))await api("POST",`/api/leads/${r.j.leadId}/documents`,{type:k,fileName:v.fileName,size:v.size});
+  b.className="banner";b.textContent=`Lead ${r.j.leadId} created. AI call queued in ${r.j.language}.`;
+  clearForm(true);
+ }else{b.className="banner e";b.textContent=r.j.message||"The lead could not be created.";}
+ btn.disabled=false;};
+function clearForm(keepBanner){
+ ["name","mobile","email","pin","amount","grams"].forEach(i=>$(i).value="");$("tnc").checked=false;$("product").value="";pinData=null;$("pinInfo").innerHTML="";
+ setSubs();["name","mobile","email","pin","product","sub","grams","amount","tnc"].forEach(k=>err(k));if(!keepBanner){$("banner").className="";$("banner").textContent="";}}
+$("reset").onclick=()=>clearForm(false);
+$("wipe").onclick=async()=>{await api("POST","/api/reset",{});log=[];await loadLeads();};$("refresh").onclick=loadLeads;
+
+/* tabs */
+function tab(w){["form","portal"].forEach(t=>{$("p-"+t).hidden=t!==w;$("t-"+t).setAttribute("aria-selected",t===w);});if(w==="portal")loadLeads();}
+$("t-form").onclick=()=>tab("form");$("t-portal").onclick=()=>tab("portal");
+document.querySelectorAll("[data-p]").forEach(a=>a.onclick=()=>{tab("form");$("product").value=a.dataset.p;setSubs();$("product").scrollIntoView({behavior:"smooth"});});
+$("navApply").onclick=()=>{tab("form");$("name").focus();};$("navLogin").onclick=()=>tab("portal");
+renderLog();renderPortal();
+</script>
+</body>
+</html>

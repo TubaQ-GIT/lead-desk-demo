@@ -1,0 +1,6 @@
+{
+  "name": "lead-desk-demo",
+  "private": true,
+  "type": "module",
+  "dependencies": { "@netlify/blobs": "^8.1.0" }
+}
